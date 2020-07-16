@@ -10,6 +10,15 @@ Extra features:
 
 - Limiting total request time to 100ms. In case of delayed response by the backend, a response of `204 No Content` will be returned and the client will not be made aware that a timeout has ocurred.
 
+## Requirements
+
+- docker
+- docker-compose
+
+And for testing:
+
+- Node.js
+
 ### HAProxy: Reverse proxy
 
 A HAProxy docker container configured via the `./config/haproxy.cfg` file binds to port `8080` and forwards all HTTP requests to `localhost:3333`.
