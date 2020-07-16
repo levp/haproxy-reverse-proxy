@@ -1,16 +1,46 @@
 version: '3.7'
 
+x-service-defaults: &service-defaults
+  logging:
+    options:
+      max-file: '10'
+      max-size: '10m'
+
 services:
+  exporter:
+    <<: *service-defaults
+    image: 'prom/haproxy-exporter:v0.11.0'
+    container_name: 'haproxy-exporter'
+    network_mode: 'host'
+    command: '--haproxy.scrape-uri="http://localhost:8404/stats;csv"'
+    ports:
+      - '9101:9101'
+
+  logstash:
+    <<: *service-defaults
+    image: 'logstash:7.6.1'
+    container_name: 'haproxy-logstash'
+    network_mode: 'host'
+    ports:
+      - '9999:9999'
+    environment:
+      # Disable paid features
+      XPACK_MONITORING_ENABLED: 'false'
+    volumes:
+      - './pipeline:/usr/share/logstash/pipeline/:ro'
+      - './socket/:/socket/'
+      
   haproxy:
+    <<: *service-defaults
+    depends_on: 
+      - 'logstash'
     image: 'haproxy:2.2.0'
     container_name: 'haproxy'
     network_mode: 'host'
     ports:
       - '8080:8080'
+      - '8404:8404'
     volumes:
       - './config/:/usr/local/etc/haproxy/:ro'
       - './custom-http-responses/:/custom-http-responses/'
-    logging:
-      options:
-        max-file: '10'
-        max-size: '10m'
+      - './socket/:/socket/'
