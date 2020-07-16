@@ -1,0 +1,16 @@
+version: '3.7'
+
+services:
+  haproxy:
+    image: 'haproxy:2.2.0'
+    container_name: 'haproxy'
+    network_mode: 'host'
+    ports:
+      - '8080:8080'
+    volumes:
+      - './config/:/usr/local/etc/haproxy/:ro'
+      - './custom-http-responses/:/custom-http-responses/'
+    logging:
+      options:
+        max-file: '10'
+        max-size: '10m'
