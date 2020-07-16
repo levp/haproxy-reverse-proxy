@@ -19,6 +19,10 @@ And for testing:
 
 - Node.js
 
+## Running everything at once
+
+`sudo docker-compose up`
+
 ### HAProxy: Reverse proxy
 
 A HAProxy docker container configured via the `./config/haproxy.cfg` file binds to port `8080` and forwards all HTTP requests to `localhost:3333`.
