@@ -1,4 +1,4 @@
-# HTTP Reverse proxy
+# HTTP Reverse proxy via `Haproxy`
 
 ## Features
 
