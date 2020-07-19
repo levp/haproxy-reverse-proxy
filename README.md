@@ -2,9 +2,9 @@
 
 ## Features
 
-- Transparent HTTP reverse proxying.
-- Prometheus metrics exporter.
+- Transparent HTTP reverse proxying via Haproxy.
 - Full request body processing via Logstash.
+- Prometheus metrics exporter.
 
 Extra features:
 
@@ -36,6 +36,10 @@ The following cases will return a `204 No Content` resposne to the client, as de
 
 A `:8404/admin?stats` endpoint exposes various metrics in the form of an HTML page.
 
+### Logstash: Data filtering and transformation
+
+The HAProxy server is configured to send the full request body of every incoming request to a Logstash container via syslog. Logstash is listening for incoming data on UDP socket and will process the data, potentially sending the output to something like an Apache Kafka topic or simply a file.
+
 ### HAProxy Exporter: Prometheus metrics
 
 Scrape endpoint: `:9101/metrics`
@@ -44,11 +48,6 @@ A HAProxy exporter container will read data from the `:8404/admin?stats;csv` end
 
 Example stat: `haproxy_frontend_http_requests_total{frontend="reverse_proxy"}`  
 This is the *total number of requests* received by the reverse proxy endpoint since HAProxy was launched. Measuring the delta between snapshots should provide a good indication of the incoming request rate.
-
-
-### Logstash: Data filtering and transformation
-
-The HAProxy server is configured to send the full request body of every incoming request to a Logstash container via syslog. Logstash is listening for incoming data on UDP socket and will process the data, potentially sending the output to something like an Apache Kafka topic or simply a file.
 
 ## Development and testing
 
